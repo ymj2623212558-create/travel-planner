@@ -3,6 +3,7 @@ import axios from 'axios';
 import SearchCity from '@/components/SearchCity';
 import TravelPrepCard from '@/components/TravelPrepCard';
 import TripMap from '@/components/TripMap';
+import LiveInfoStrip from '@/components/LiveInfoStrip';
 import { getPrepForCity } from '@/data/travel-prep';
 
 interface JourneyInput {
@@ -1018,6 +1019,9 @@ export default function ItineraryPage() {
                 </span>
               )}
             </h2>
+
+            {/* Live weather/exchange rate strip */}
+            <LiveInfoStrip cityName={input.end_city?.split(',')[0]?.trim() || ''} />
 
             {/* Summary Cards - only when itinerary exists */}
             {itinerary && (
