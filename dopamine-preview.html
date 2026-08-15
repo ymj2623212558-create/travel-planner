@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多巴胺风格预览 - 旅行规划师</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'PingFang SC', sans-serif; }
+
+        .page-title {
+            text-align: center;
+            padding: 32px 20px 8px;
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(90deg, #F15BB5, #FEE440, #00BBF9);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .page-sub {
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+            padding-bottom: 28px;
+        }
+
+        /* ============ 方案 1：快乐彩虹 粉→橙→黄 ============ */
+        .dop-1 {
+            background: linear-gradient(135deg, #FF6B9D 0%, #FFA62B 55%, #FFD93D 100%);
+            padding: 48px 20px;
+        }
+
+        /* ============ 方案 2：多巴胺紫 紫→粉→橙 ============ */
+        .dop-2 {
+            background: linear-gradient(135deg, #9B5DE5 0%, #F15BB5 50%, #FEE440 100%);
+            padding: 48px 20px;
+        }
+
+        /* ============ 方案 3：果味清透 蓝→绿→黄 ============ */
+        .dop-3 {
+            background: linear-gradient(135deg, #4D96FF 0%, #06D6A0 50%, #FFD166 100%);
+            padding: 48px 20px;
+        }
+
+        .demo-card {
+            background: rgba(255, 255, 255, 0.96);
+            border-radius: 24px;
+            padding: 32px;
+            max-width: 420px;
+            margin: 0 auto;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+            border: 3px solid rgba(255,255,255,0.6);
+        }
+
+        .demo-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .demo-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #111;
+        }
+
+        .demo-tabs {
+            display: flex;
+            gap: 6px;
+            background: #f3f4f6;
+            padding: 4px;
+            border-radius: 999px;
+        }
+
+        .demo-tab {
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+        }
+
+        .demo-tab.active {
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .demo-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #eee;
+            border-radius: 16px;
+            font-size: 14px;
+            margin-bottom: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .demo-input:focus {
+            border-color: #F15BB5;
+        }
+
+        .demo-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .demo-interests {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .demo-chip {
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+        }
+
+        .chip-pink { background: #FFE3EC; color: #F15BB5; }
+        .chip-yellow { background: #FFF3CD; color: #B8860B; }
+        .chip-blue { background: #E3F2FF; color: #0077CC; }
+        .chip-green { background: #E2F7EC; color: #06A35E; }
+        .chip-purple { background: #F0E8FF; color: #7B3FF2; }
+        .chip-orange { background: #FFEDE3; color: #E8590C; }
+
+        .demo-btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 16px;
+            border: none;
+            font-size: 15px;
+            font-weight: 800;
+            color: #fff;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            transition: transform 0.15s;
+        }
+
+        .demo-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-rainbow {
+            background: linear-gradient(90deg, #F15BB5, #FEE440, #00BBF9);
+            color: #111;
+        }
+
+        .btn-purple {
+            background: linear-gradient(90deg, #9B5DE5, #F15BB5);
+        }
+
+        .btn-fruity {
+            background: linear-gradient(90deg, #4D96FF, #06D6A0);
+        }
+
+        .variant-tag {
+            text-align: center;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .variant-code {
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+            font-size: 12px;
+            font-family: monospace;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-title">🌈 多巴胺风格预览</div>
+    <div class="page-sub">3 种背景渐变方案 · 请选择你喜欢的</div>
+
+    <!-- 方案 1：快乐彩虹 -->
+    <div class="dop-1">
+        <div class="variant-tag">方案 1 · 快乐彩虹（粉→橙→黄）</div>
+        <div class="demo-card">
+            <div class="demo-head">
+                <div class="demo-title">✈️ 智能旅行规划师</div>
+                <div class="demo-tabs">
+                    <button class="demo-tab active">🌍 全球</button>
+                    <button class="demo-tab">🇨🇳 中国</button>
+                </div>
+            </div>
+            <label class="demo-label">起点城市</label>
+            <input class="demo-input" placeholder="搜索全球城市">
+            <label class="demo-label">终点城市</label>
+            <input class="demo-input" placeholder="搜索全球城市">
+            <label class="demo-label">兴趣爱好</label>
+            <div class="demo-interests">
+                <button class="demo-chip chip-pink">🏛️ 历史</button>
+                <button class="demo-chip chip-green">🌲 自然</button>
+                <button class="demo-chip chip-orange">🍜 美食</button>
+                <button class="demo-chip chip-blue">🛍️ 购物</button>
+                <button class="demo-chip chip-purple">🎭 文化</button>
+                <button class="demo-chip chip-yellow">🧗 冒险</button>
+            </div>
+            <button class="demo-btn btn-rainbow">✨ 生成 AI 行程 →</button>
+        </div>
+        <div class="variant-code">#FF6B9D → #FFA62B → #FFD93D</div>
+    </div>
+
+    <!-- 方案 2：多巴胺紫 -->
+    <div class="dop-2">
+        <div class="variant-tag">方案 2 · 多巴胺紫（紫→粉→黄）</div>
+        <div class="demo-card">
+            <div class="demo-head">
+                <div class="demo-title">✈️ 智能旅行规划师</div>
+                <div class="demo-tabs">
+                    <button class="demo-tab active">🌍 全球</button>
+                    <button class="demo-tab">🇨🇳 中国</button>
+                </div>
+            </div>
+            <label class="demo-label">起点城市</label>
+            <input class="demo-input" placeholder="搜索全球城市">
+            <label class="demo-label">终点城市</label>
+            <input class="demo-input" placeholder="搜索全球城市">
+            <label class="demo-label">兴趣爱好</label>
+            <div class="demo-interests">
+                <button class="demo-chip chip-pink">🏛️ 历史</button>
+                <button class="demo-chip chip-green">🌲 自然</button>
+                <button class="demo-chip chip-orange">🍜 美食</button>
+                <button class="demo-chip chip-blue">🛍️ 购物</button>
+                <button class="demo-chip chip-purple">🎭 文化</button>
+                <button class="demo-chip chip-yellow">🧗 冒险</button>
+            </div>
+            <button class="demo-btn btn-purple">✨ 生成 AI 行程 →</button>
+        </div>
+        <div class="variant-code">#9B5DE5 → #F15BB5 → #FEE440</div>
+    </div>
+
+    <!-- 方案 3：果味清透 -->
+    <div class="dop-3">
+        <div class="variant-tag">方案 3 · 果味清透（蓝→绿→黄）</div>
+        <div class="demo-card">
+            <div class="demo-head">
+                <div class="demo-title">✈️ 智能旅行规划师</div>
+                <div class="demo-tabs">
+                    <button class="demo-tab active">🌍 全球</button>
+                    <button class="demo-tab">🇨🇳 中国</button>
+                </div>
+            </div>
+            <label class="demo-label">起点城市</label>
+            <input class="demo-input" placeholder="搜索全球城市">
+            <label class="demo-label">终点城市</label>
+            <input class="demo-input" placeholder="搜索全球城市">
+            <label class="demo-label">兴趣爱好</label>
+            <div class="demo-interests">
+                <button class="demo-chip chip-pink">🏛️ 历史</button>
+                <button class="demo-chip chip-green">🌲 自然</button>
+                <button class="demo-chip chip-orange">🍜 美食</button>
+                <button class="demo-chip chip-blue">🛍️ 购物</button>
+                <button class="demo-chip chip-purple">🎭 文化</button>
+                <button class="demo-chip chip-yellow">🧗 冒险</button>
+            </div>
+            <button class="demo-btn btn-fruity">✨ 生成 AI 行程 →</button>
+        </div>
+        <div class="variant-code">#4D96FF → #06D6A0 → #FFD166</div>
+    </div>
+
+    <div style="text-align:center; padding: 24px; color: #999; font-size: 13px;">
+        选定后我会把「背景 + 卡片 + 按钮 + Tab + 兴趣标签」整个风格统一改掉
+    </div>
+</body>
+</html>

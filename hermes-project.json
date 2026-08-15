@@ -1,0 +1,23 @@
+{
+  "project_id": "travel-planner",
+  "name": "✈️ 智能旅行规划师",
+  "description": "起点/终点路线规划 + AI 生成每日行程 + 花费估算",
+  "icon": "✈️",
+  "color": "from-blue-600 to-cyan-500",
+  "url": "http://localhost:3000/itinerary",
+  "type": "webapp",
+  "port": 3000,
+  "backend_port": 8000,
+  "status": "running",
+  "features": [
+    "全球城市搜索 (15万+城市)",
+    "AI 智能行程生成",
+    "花费估算 (门票/交通/餐饮/住宿)",
+    "路线优化 (不走回头路)"
+  ],
+  "categories": [
+    "旅行",
+    "AI",
+    "生产力"
+  ]
+}

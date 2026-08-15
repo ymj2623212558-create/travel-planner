@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 255, 107, 157;   /* #FF6B9D - 粉 */
+  --background-mid-rgb: 255, 166, 43;      /* #FFA62B - 橙 */
+  --background-end-rgb: 255, 217, 61;      /* #FFD93D - 黄 */
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      rgb(var(--background-start-rgb)),    /* #FF6B9D - 粉 */
+      rgb(var(--background-mid-rgb)),      /* #FFA62B - 橙 */
+      rgb(var(--background-end-rgb))       /* #FFD93D - 黄 */
+    );
+  min-height: 100vh;
+}

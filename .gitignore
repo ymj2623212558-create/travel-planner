@@ -1,0 +1,49 @@
+# ===== 安全：API Key 等敏感文件绝不提交 =====
+backend/.env
+.env
+*.env
+*.env.local
+.quota.json
+backend/_test_itinerary.json
+*_test_*.json
+
+# ===== Node =====
+node_modules/
+.next/
+out/
+dist/
+build/
+*.tsbuildinfo
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+uvicorn.log
+*.log
+
+# ===== 大型数据文件（冗余，不随仓库分发） =====
+# cities-all.json 在后端 data/ 目录（156MB 级，GitHub 单文件限 100MB，不提交）
+backend/data/cities-all.json
+backend/data/cities*.json
+frontend/data/cities-flat.json
+frontend/data/cities.json
+frontend/data/cities-search.json
+frontend/data/cities-preload.json
+
+# ===== 系统/编辑器 =====
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# ===== 临时 =====
+.hermes/
+tmp/
+temp/
