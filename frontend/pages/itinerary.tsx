@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import SearchCity from '@/components/SearchCity';
 import TravelPrepCard from '@/components/TravelPrepCard';
+import TripMap from '@/components/TripMap';
 import { getPrepForCity } from '@/data/travel-prep';
 
 interface JourneyInput {
@@ -10,6 +11,8 @@ interface JourneyInput {
   days: number;
   budget_per_day?: number;
   interests: string[];
+  plan_type?: string;
+  travel_style?: string;
 }
 
 // SVG Icon Components (replace emoji with SVG)
@@ -69,7 +72,9 @@ export default function ItineraryPage() {
     end_city: '',
     days: 3,
     budget_per_day: undefined,
-    interests: []
+    interests: [],
+    plan_type: 'standard',
+    travel_style: ''
   });
   
   const [itinerary, setItinerary] = useState<any>(null);
@@ -869,6 +874,67 @@ export default function ItineraryPage() {
               </div>
             </div>
 
+            {/* Plan Type (economy/standard/luxury) */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                方案类型
+                <span className="text-[10px] font-medium text-orange-500 bg-orange-50 border border-orange-100 rounded-full px-2 py-0.5">
+                  💰 影响费用档次
+                </span>
+              </label>
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { id: 'economy', label: '💸 经济型', desc: '省钱优先' },
+                  { id: 'standard', label: '⭐ 标准型', desc: '性价比' },
+                  { id: 'luxury', label: '👑 豪华型', desc: '体验优先' },
+                ].map(opt => (
+                  <button
+                    key={opt.id}
+                    onClick={() => setInput({ ...input, plan_type: opt.id })}
+                    className={`py-2.5 rounded-2xl text-sm font-semibold transition-all duration-200 transform hover:scale-[1.02] border-2 ${
+                      input.plan_type === opt.id
+                        ? 'bg-gradient-to-r from-orange-400 to-yellow-400 text-white border-transparent shadow-md'
+                        : 'bg-white text-gray-600 border-gray-200 hover:border-orange-300'
+                    }`}
+                  >
+                    <span className="block">{opt.label}</span>
+                    <span className={`block text-[10px] font-normal ${input.plan_type === opt.id ? 'text-white/90' : 'text-gray-400'}`}>{opt.desc}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Travel Style (family/couple/budget/elderly) */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                出行模式
+                <span className="text-[10px] font-medium text-blue-500 bg-blue-50 border border-blue-100 rounded-full px-2 py-0.5">
+                  👨‍👩‍👧 可选，不选则通用
+                </span>
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { id: '', label: '🚶 通用' },
+                  { id: 'family', label: '👨‍👩‍👧 亲子游' },
+                  { id: 'couple', label: '💑 情侣游' },
+                  { id: 'budget', label: '🎒 穷游' },
+                  { id: 'elderly', label: '🧓 带老人' },
+                ].map(opt => (
+                  <button
+                    key={opt.id}
+                    onClick={() => setInput({ ...input, travel_style: opt.id })}
+                    className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 transform hover:scale-105 ${
+                      input.travel_style === opt.id
+                        ? 'bg-gradient-to-r from-blue-500 to-indigo-400 text-white shadow-md'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             {/* Submit Button */}
             <button
               onClick={handleSubmit}
@@ -1011,6 +1077,18 @@ export default function ItineraryPage() {
                         <span className="text-sm font-bold text-orange-500">¥{day.total_cost.toLocaleString()}</span>
                       )}
                     </div>
+
+                    {/* Day Map */}
+                    <TripMap
+                      title={`🗺️ ${day?.theme || `第 ${day?.day || dayIdx + 1} 天`}路线`}
+                      points={(day?.activities || []).map((act: any) => ({
+                        name: act?.name || '',
+                        time: act?.time || '',
+                        type: act?.type || '',
+                        lat: act?.lat,
+                        lng: act?.lng,
+                      }))}
+                    />
 
                     {/* Activities */}
                     <div className="divide-y divide-gray-50">

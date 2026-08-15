@@ -28,6 +28,8 @@ class JourneyInput(BaseModel):
     days: int
     budget_per_day: Optional[float] = None
     interests: Optional[List[str]] = []  # ['history', 'nature', 'food', 'shopping']
+    plan_type: Optional[str] = "standard"  # economy / standard / luxury
+    travel_style: Optional[str] = ""  # family / couple / budget / elderly
 
 class PointOfInterest(BaseModel):
     name: str
@@ -42,6 +44,8 @@ class PointOfInterest(BaseModel):
     why: Optional[str] = None  # 推荐理由
     price_source: Optional[str] = None  # 'official' = 官方门票价 / 'ai' = AI 估算
     ticket_price_range: Optional[str] = None  # 官方门票价格区间（如 "60-60"）
+    lat: Optional[float] = None  # 纬度（行程地图用）
+    lng: Optional[float] = None  # 经度（行程地图用）
 
 class DailyItinerary(BaseModel):
     day: int
@@ -217,6 +221,8 @@ def generate_itinerary(
             user_api_key=x_api_key,
             user_api_url=x_api_url,
             user_model=x_api_model,
+            plan_type=input.plan_type or "standard",
+            travel_style=input.travel_style or "",
         )
     except RuntimeError as e:
         msg = str(e)

@@ -71,10 +71,14 @@ def generate_itinerary_ai(
     user_api_key: Optional[str] = None,
     user_api_url: Optional[str] = None,
     user_model: Optional[str] = None,
+    plan_type: str = "standard",
+    travel_style: str = "",
 ) -> dict:
     """
     调用 AI 生成行程，返回结构化 JSON。
     优先用户 Key；无用户 Key 时用共享 Key（消耗免费额度）。
+    plan_type: 'economy' 经济 / 'standard' 标准 / 'luxury' 豪华
+    travel_style: 情景模式（亲子游/情侣游/穷游/带老人等）
     """
     # 决定用哪个 Key
     use_shared = not user_api_key
@@ -97,25 +101,33 @@ def generate_itinerary_ai(
     }
     interests_text = "、".join(interest_labels.get(i, i) for i in interests) or "全面体验"
     budget_text = "无限制" if not budget_per_day else f"{budget_per_day} 元"
+    plan_text = {
+        "economy": "经济型：省钱优先，经济酒店/青旅、公共交通、平价餐厅",
+        "standard": "标准型：性价比优先，舒适酒店、合理交通、本地特色餐厅",
+        "luxury": "豪华型：体验优先，高端酒店、专车/头等舱、高档餐厅",
+    }.get(plan_type, "标准型：性价比优先，舒适酒店、合理交通、本地特色餐厅")
+
+    style_text = ""
+    if travel_style:
+        style_map = {
+            "family": "亲子游：安排孩子喜欢的景点、节奏放缓",
+            "couple": "情侣游：安排浪漫景点、夜景体验",
+            "budget": "穷游：极致省钱、免费景点优先",
+            "elderly": "带老人：节奏轻松、少爬山、多休息",
+        }
+        style_text = "、" + style_map.get(travel_style, travel_style)
 
     json_example = """{"daily_plans":[{"day":1,"theme":"当天主题","activities":[{"name":"景点名","type":"attraction","category":"类别","time":"09:00","duration_hours":2,"estimated_cost":100,"rating":4.5,"description":"一句话简介"}],"total_cost":350,"notes":"小贴士"}],"total_estimated_cost":1200,"cost_breakdown":{"交通":300,"住宿":400,"餐饮":250,"门票":150}}"""
 
-    # 从门票库挑出与起点/终点城市相关的热门景点，引导 AI 选择（提高官方价匹配率）
-    from ticket_prices import TICKET_PRICES
-    city_hints = []
-    for city_name in [start_city.split(',')[0], end_city.split(',')[0]]:
-        for t in TICKET_PRICES:
-            if t.get("city") == city_name.strip():
-                city_hints.append(f"{t['name']}(门票{t['price'][0]}-{t['price'][1]}元)")
+    # 注意：不再注入 city_hints（景点列表会让 deepseek 推理变长导致 Dogrouter 504）
+    # 官方价匹配由 AI 自然生成知名景点后自动命中
     city_hint_text = ""
-    if city_hints:
-        city_hint_text = "\n景点参考（优先从中选择知名景点）：" + "、".join(city_hints[:8])
 
     prompt = f"""你是资深旅行规划师。为以下行程输出严格 JSON（只输出 JSON 本身）：
 
 {json_example}
 
-起点：{start_city} | 终点：{end_city} | 天数：{days} 天 | 每日预算：{budget_text} | 兴趣：{interests_text}
+起点：{start_city} | 终点：{end_city} | 天数：{days} 天 | 每日预算：{budget_text} | 兴趣：{interests_text} | 方案：{plan_text}{style_text}
 {city_hint_text}
 
 要求：
@@ -199,6 +211,15 @@ def generate_itinerary_ai(
                     act["ticket_price_range"] = f"{p_min}-{p_max}"
                     act["price_source"] = "official"
                     ticket_matched += 1
+
+    # 为活动补充经纬度（Open-Meteo geocoding，免费无 Key）——用于行程地图
+    try:
+        _add_coordinates(data, start_city, end_city)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()  # 坐标失败不影响行程，但记录日志
+        print(f"[coords] 坐标补充失败: {str(e)[:100]}")
+
     data["ticket_matched"] = ticket_matched
 
     # 消费免费额度（仅启用限制时计数）
@@ -389,3 +410,67 @@ def modify_itinerary_ai(
             continue
 
     raise RuntimeError(f"所有模型均失败: {str(last_error)[:200]}")
+
+
+def _add_coordinates(data: dict, start_city: str, end_city: str):
+    """
+    为行程中的活动补充经纬度坐标（Open-Meteo geocoding，免费无 Key）。
+    Open-Meteo 只支持城市级查询（景点名查不到），故：
+    - 每天用终点城市坐标作为基准
+    - 活动按索引加微偏移（±0.02度 ≈ 2km），形成围绕城市的路线散点
+    """
+    import httpx as _httpx
+
+    def _geocode(name: str):
+        """按城市名查坐标，失败返回 None"""
+        try:
+            # 1. 中文名 → 英文名（国际城市，避免"东京"命中江苏）
+            from city_translations import zh_to_en
+            en_name = zh_to_en(name) or name
+            r = _httpx.get(
+                "https://geocoding-api.open-meteo.com/v1/search",
+                params={"name": en_name, "count": 1, "language": "en"},
+                timeout=6,
+            )
+            if r.status_code == 200:
+                results = r.json().get("results", [])
+                if results:
+                    return {"lat": results[0]["latitude"], "lng": results[0]["longitude"]}
+            # 2. 英文名无结果 → 中文直查（中国城市名）
+            if name:
+                r2 = _httpx.get(
+                    "https://geocoding-api.open-meteo.com/v1/search",
+                    params={"name": name, "count": 1, "language": "zh"},
+                    timeout=6,
+                )
+                if r2.status_code == 200:
+                    results = r2.json().get("results", [])
+                    if results:
+                        return {"lat": results[0]["latitude"], "lng": results[0]["longitude"]}
+        except Exception:
+            pass
+        return None
+
+    # 终点城市坐标（缓存，只查一次）
+    end_key = end_city.split(",")[0].strip()
+    start_key = start_city.split(",")[0].strip()
+    end_coord = _geocode(end_key)
+    if not end_coord and end_key != start_key:
+        end_coord = _geocode(start_key)
+
+    if not end_coord:
+        return  # 城市都查不到，跳过
+
+    # 每天活动按索引微偏移
+    for plan in data.get("daily_plans", []):
+        acts = plan.get("activities", [])
+        n = len(acts)
+        for i, act in enumerate(acts):
+            if act.get("lat") and act.get("lng"):
+                continue
+            # 以城市坐标为中心，按索引做小角度偏移（近似圆环分布）
+            import math
+            angle = (2 * math.pi * i) / max(n, 1)
+            radius = 0.012  # ~1.3km
+            act["lat"] = round(end_coord["lat"] + radius * math.sin(angle), 6)
+            act["lng"] = round(end_coord["lng"] + radius * math.cos(angle), 6)

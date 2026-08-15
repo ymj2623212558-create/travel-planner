@@ -1,0 +1,24 @@
+{
+  "name": "智能旅行规划师",
+  "short_name": "旅行规划",
+  "description": "AI 智能旅行规划：输入城市和天数，一键生成完整行程、费用明细、出行准备",
+  "start_url": "/itinerary",
+  "display": "standalone",
+  "background_color": "#FF6B9D",
+  "theme_color": "#FF6B9D",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
