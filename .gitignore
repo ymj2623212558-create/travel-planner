@@ -47,3 +47,4 @@ Thumbs.db
 .hermes/
 tmp/
 temp/
+_backup_*/

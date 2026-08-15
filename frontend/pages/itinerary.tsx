@@ -96,7 +96,7 @@ export default function ItineraryPage() {
       if (modelName) headers['X-API-Model'] = modelName;
       const response = await axios.post('http://localhost:8000/api/itinerary/details', {
         activities: [act],
-      }, { headers });
+      }, { headers, timeout: 90000 });
       const details = response.data?.details || {};
       const actDetails = details[act?.name];
       if (actDetails && itinerary) {
@@ -277,7 +277,7 @@ export default function ItineraryPage() {
         request: aiModifyReq.trim(),
         start_city: input.start_city,
         end_city: input.end_city,
-      }, { headers });
+      }, { headers, timeout: 180000 });
       setItinerary(response.data);
       setAiModifyOpen(false);
       setAiModifyReq('');
@@ -464,7 +464,7 @@ export default function ItineraryPage() {
       if (apiUrl) headers['X-API-URL'] = apiUrl;
       if (modelName) headers['X-API-Model'] = modelName;
       
-      const response = await axios.post('http://localhost:8000/api/itinerary/generate', input, { headers });
+      const response = await axios.post('http://localhost:8000/api/itinerary/generate', input, { headers, timeout: 240000 });
       stopProgress();
       setProgress(100);
       setItinerary(response.data);
