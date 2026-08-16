@@ -2,7 +2,13 @@
 
 基于 AI 的全栈旅行规划应用 —— 输入起终点和天数，AI 生成完整行程（每日时间线、费用明细、出行准备、实时天气/汇率）。
 
-![Next.js](https://img.shields.io/badge/Next.js-14-black) ![FastAPI](https://img.shields.io/badge/FastAPI-Python-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-✅-blue)
+![Next.js](https://img.shields.io/badge/Next.js-14-black) ![FastAPI](https://img.shields.io/badge/FastAPI-Python-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-✅-blue) ![PWA](https://img.shields.io/badge/PWA-✅-orange)
+
+---
+
+## 📸 界面预览
+
+![首页表单](docs/screenshot-home.png)
 
 ---
 
@@ -10,15 +16,19 @@
 
 | 功能 | 说明 |
 |------|------|
-| 🌍 **全球城市搜索** | 国内 6,673 行政区 + 462 著名景区 + 全球 722 中文词条 + 156,282 英文城市 |
+| 🌍 **全球城市搜索** | 国内 6,673 行政区 + 462 著名景区 + 全球 726 中文词条 + 156,286 英文城市 |
 | 🤖 **AI 行程生成** | 每日 6 活动时间线（08:00-22:00）、主题化安排、兴趣驱动（美食/历史/自然/购物/文化/冒险）|
+| 💰 **方案类型** | 经济型 / 标准型 / 豪华型（影响费用档次）|
+| 👨‍👩‍👧 **出行模式** | 亲子游 / 情侣游 / 穷游 / 带老人（影响行程安排）|
 | 📖 **详情展开** | 每个活动可展开查看：介绍、游玩建议、推荐理由（AI 按需补全）|
 | ✏️ **行程编辑** | 手动编辑活动（名称/时间/费用/描述）+ AI 调整（输入需求自动改行程）|
+| 🗺️ **行程地图** | Leaflet + OpenStreetMap 免费地图，每日路线可视化 |
 | 📤 **导出行程** | Markdown 复制 / 下载 .md / 打印存 PDF |
-| 🎫 **官方门票价** | 140 个全球热门景点官方参考价（AI 估算自动覆盖）|
+| 🎫 **官方门票价** | 428 个全球热门景点官方参考价（AI 估算自动覆盖）|
 | 📝 **众包花费** | 用户报告实际花费，帮助后来者 |
-| 🧳 **出行准备** | 24 国 + 34 省：证件/签证/货币/插头/健康/贴士 |
+| 🧳 **出行准备** | 40 国 + 34 省：证件/签证/货币/插头/健康/贴士 |
 | 🌦️ **实时数据** | 天气（Open-Meteo）+ 汇率（Frankfurter），免费 API 双源互备 |
+| 📱 **PWA 支持** | 手机浏览器"添加到主屏幕"，全屏像 App 一样使用 |
 | 🕐 **历史记录** | localStorage 保存，随时回看/回填 |
 
 ## 🎨 视觉

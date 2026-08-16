@@ -175,6 +175,23 @@ def city_search(
         except Exception:
             pass
 
+    # 中文翻译后：优先选国家正确的结果（避免"斐济"命中沙特同名地）
+    if zh_translated and len(results) > 1:
+        try:
+            from city_translations import CITY_ZH_TO_EN, CITY_EN_TO_ZH
+            # 已知会错位的词条：优先正确国家
+            country_pref = {
+                "斐济": "Fiji", "大溪地": "French Polynesia", "格鲁吉亚": "Georgia",
+                "圣保罗": "Brazil", "维多利亚": "Canada",
+            }
+            if q.strip() in country_pref:
+                pref_country = country_pref[q.strip()]
+                filtered = [c for c in results if pref_country.lower() in c.get("country", "").lower()]
+                if filtered:
+                    results = filtered
+        except Exception:
+            pass
+
     # 补充中文名显示
     if zh_translated or scenic_mapped:
         for r in results:

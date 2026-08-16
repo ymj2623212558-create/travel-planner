@@ -406,6 +406,15 @@ CITY_ZH_TO_EN = {
     "死海": "Dead Sea", "亚喀巴": "Aqaba", "杰拉什": "Jerash",
     "贝鲁特": "Beirut", "比布鲁斯": "Byblos", "阿尔及尔": "Algiers",
     "奥兰": "Oran", "卡萨布兰卡": "Casablanca",
+
+    # ===== 补漏（数据库新增） =====
+    "圣托里尼": "Santorini", "雷克雅未克": "Reykjavik", "哈尔施塔特": "Hallstatt", "富国岛": "Phu Quoc",
+    "乌布": "Ubud", "基多": "Quito", "斐济": "Suva",
+    "苏瓦": "Suva", "楠迪": "Nadi", "大溪地": "Papeete", "帕皮提": "Papeete",
+    "巴厘岛乌布": "Ubud", "撒哈拉": "Sahara", "撒哈拉沙漠": "Sahara",
+    "里约热内卢": "Rio de Janeiro", "波哥大": "Bogota", "布宜诺斯艾利斯": "Buenos Aires",
+    "哈瓦那": "Havana", "利马": "Lima", "圣保罗": "Sao Paulo",
+    "开普敦": "Cape Town", "约翰内斯堡": "Johannesburg", "内罗毕": "Nairobi",
 }
 
 # 反向：英文名 → 中文名（用于显示）
