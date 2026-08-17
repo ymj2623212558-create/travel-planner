@@ -1020,8 +1020,11 @@ export default function ItineraryPage() {
               )}
             </h2>
 
-            {/* Live weather/exchange rate strip */}
-            <LiveInfoStrip cityName={input.end_city?.split(',')[0]?.trim() || ''} />
+            {/* Live weather/exchange rate strip - 起终点双城市 */}
+            <LiveInfoStrip
+              cityName={input.end_city?.split(',')[0]?.trim() || ''}
+              originCity={input.start_city?.split(',')[0]?.trim() || ''}
+            />
 
             {/* Summary Cards - only when itinerary exists */}
             {itinerary && (
