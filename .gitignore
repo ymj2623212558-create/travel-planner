@@ -27,10 +27,9 @@ venv/
 uvicorn.log
 *.log
 
-# ===== 大型数据文件（冗余，不随仓库分发） =====
-# cities-all.json 在后端 data/ 目录（156MB 级，GitHub 单文件限 100MB，不提交）
-backend/data/cities-all.json
-backend/data/cities*.json
+# ===== 大型数据文件 =====
+# cities-all.json 7.2MB（156,286 城市），低于 GitHub 100MB 限制，正常提交
+# 冗余副本（前端不用）不提交
 frontend/data/cities-flat.json
 frontend/data/cities.json
 frontend/data/cities-search.json
