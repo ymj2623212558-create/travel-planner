@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { CHINA_REGIONS, HOT_COUNTRIES } from '@/data/regions';
+import { API_BASE } from '@/lib/api-config';
 
 interface CityResult {
   name: string;
@@ -84,7 +85,7 @@ export default function SearchCity({
     setLoading(true);
     try {
       const res = await fetch(
-        `http://localhost:8000/api/cities/search?q=${encodeURIComponent(q)}&limit=8&scope=${scope}`
+        `${API_BASE}/api/cities/search?q=${encodeURIComponent(q)}&limit=8&scope=${scope}`
       );
       const data = await res.json();
       setResults(data.results || []);

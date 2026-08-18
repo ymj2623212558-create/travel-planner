@@ -12,10 +12,14 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# CORS configuration (for frontend on port 3000/5173)
+# CORS configuration (本地开发 + PocketBay 公网前端)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "https://travel-planner-frontend.pocketbay.app",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -70,6 +74,11 @@ itineraries = {}
 
 @app.get("/")
 def root():
+    # 单项目部署：根路径重定向到前端页面（有 out/ 静态目录时）
+    import os as _os
+    if _os.path.isdir(_os.path.join(_os.path.dirname(__file__), "out")):
+        from fastapi.responses import RedirectResponse
+        return RedirectResponse("/itinerary", status_code=307)
     return {
         "message": "Welcome to Travel Planner API",
         "version": "1.0.0",
@@ -322,6 +331,27 @@ def get_itinerary(journey_id: str):
         raise HTTPException(status_code=404, detail="Itinerary not found")
     
     return itineraries[journey_id]
+
+
+# ===== 单项目部署：前端静态托管（FastAPI 挂载 out/ 目录） =====
+import os
+from fastapi.responses import FileResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
+
+_STATIC_DIR = os.path.join(os.path.dirname(__file__), "out")
+if os.path.isdir(_STATIC_DIR):
+    # 根路径 → /itinerary
+    @app.get("/", include_in_schema=False)
+    def root_redirect():
+        return RedirectResponse("/itinerary", status_code=307)
+
+    # /itinerary 页面（静态托管时不存在路由，需显式返回 HTML）
+    @app.get("/itinerary", include_in_schema=False)
+    def itinerary_page():
+        return FileResponse(os.path.join(_STATIC_DIR, "itinerary.html"))
+
+    # 其余静态资源（_next/、icons/、manifest.json、sw.js 等）
+    app.mount("/", StaticFiles(directory=_STATIC_DIR, html=True), name="static")
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

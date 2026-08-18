@@ -4,6 +4,7 @@ import SearchCity from '@/components/SearchCity';
 import TravelPrepCard from '@/components/TravelPrepCard';
 import TripMap from '@/components/TripMap';
 import LiveInfoStrip from '@/components/LiveInfoStrip';
+import { API_BASE } from '@/lib/api-config';
 import { getPrepForCity } from '@/data/travel-prep';
 
 interface JourneyInput {
@@ -100,7 +101,7 @@ export default function ItineraryPage() {
       if (apiKey) headers['X-API-Key'] = apiKey;
       if (apiUrl) headers['X-API-URL'] = apiUrl;
       if (modelName) headers['X-API-Model'] = modelName;
-      const response = await axios.post('http://localhost:8000/api/itinerary/details', {
+      const response = await axios.post(`${API_BASE}/api/itinerary/details`, {
         activities: [act],
       }, { headers, timeout: 90000 });
       const details = response.data?.details || {};
@@ -278,7 +279,7 @@ export default function ItineraryPage() {
       if (apiKey) headers['X-API-Key'] = apiKey;
       if (apiUrl) headers['X-API-URL'] = apiUrl;
       if (modelName) headers['X-API-Model'] = modelName;
-      const response = await axios.post('http://localhost:8000/api/itinerary/modify', {
+      const response = await axios.post(`${API_BASE}/api/itinerary/modify`, {
         itinerary: itinerary,
         request: aiModifyReq.trim(),
         start_city: input.start_city,
@@ -470,7 +471,7 @@ export default function ItineraryPage() {
       if (apiUrl) headers['X-API-URL'] = apiUrl;
       if (modelName) headers['X-API-Model'] = modelName;
       
-      const response = await axios.post('http://localhost:8000/api/itinerary/generate', input, { headers, timeout: 240000 });
+      const response = await axios.post(`${API_BASE}/api/itinerary/generate`, input, { headers, timeout: 240000 });
       stopProgress();
       setProgress(100);
       setItinerary(response.data);

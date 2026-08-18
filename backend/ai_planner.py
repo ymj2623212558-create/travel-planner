@@ -37,8 +37,8 @@ SHARED_MODEL = _ENV.get("API_MODEL", "") or os.environ.get("API_MODEL", "deepsee
 MODEL_FALLBACK_CHAIN = ["deepseek-v4-flash", "qwen3.5-flash", "qwen3.5-plus"]
 
 # 免费次数限制（本地统计文件，重启后重置）
-# 开关：ENABLE_QUOTA=true 时启用限制；默认 false = 不限制（当前阶段放开）
-FREE_QUOTA = 8
+# 开关：ENABLE_QUOTA=true 时启用限制；默认 false = 不限制
+FREE_QUOTA = int(_ENV.get("FREE_QUOTA", "5"))  # 默认 5 次免费
 ENABLE_QUOTA = _ENV.get("ENABLE_QUOTA", "").lower() == "true"
 QUOTA_FILE = Path(__file__).parent / ".quota.json"
 
