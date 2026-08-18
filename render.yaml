@@ -1,0 +1,25 @@
+# Render 部署配置（旅游规划 — 单项目：Next.js 静态导出 + FastAPI 托管）
+# 使用方法：https://dashboard.render.com/ 新建 Blueprint，连接 GitHub 仓库即可
+# 需要环境变量：API_KEY（Dogrouter/DeepSeek 等 OpenAI 兼容密钥）
+
+services:
+  - type: web
+    name: travel-planner
+    runtime: python
+    plan: free
+    buildCommand: |
+      cd frontend && npm install && npm run build && cd ..
+      cp -r frontend/out backend/out
+      pip install -r backend/requirements.txt
+    startCommand: "uvicorn main:app --host 0.0.0.0 --port $PORT --app-dir backend"
+    envVars:
+      - key: API_KEY
+        sync: false
+      - key: API_BASE
+        value: "https://api.dogrouter.ai/v1"
+      - key: API_MODEL
+        value: "deepseek-v4-flash"
+      - key: ENABLE_QUOTA
+        value: "false"
+      - key: PYTHON_VERSION
+        value: "3.11.9"
